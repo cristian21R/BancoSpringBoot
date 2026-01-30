@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Layout/base :: head('Cuentas')"></head>
+<body>
+    <!-- menú -->
+    <div th:replace="Layout/base :: menu"></div>
+
+    <div class="container mt-4">
+        <h2 class= "text-center">Nueva Cuenta para <span th:text="|${cliente.nombre} ${cliente.apellido}|">Nombre Cliente</span></h2>
+
+        <form th:action="@{'/cuentas/guardar/' + ${cliente.id}}" th:object="${nuevaCuenta}" method="post" id="frmCuenta">
+            <div class="mb-3">
+                <label for="numeroCuenta" class="form-label">Número de Cuenta</label>
+                <input type="text" th:field="*{numeroCuenta}" class="form-control" id="numeroCuenta" >
+            </div>
+
+            <div class="mb-3">
+                <label for="saldo" class="form-label">Saldo Inicial</label>
+                <input type="number" th:field="*{saldo}" class="form-control" id="saldo" step="0.01" >
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Cuenta</button>
+            <a th:href="@{/clientes}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <div th:replace="Layout/base :: footer"></div>
+    
+    
+    <script>
+$(document).ready(function() {
+    $("#frmCuenta").validate({
+        rules: {
+            numeroCuenta: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                digits: true
+            },
+            saldo: {
+                required: true,
+                number: true,
+                min: 5,
+                max: 5000
+            } 
+        },
+        messages: {
+            numeroCuenta: {
+                required: "Campo requerido",
+                minlength: "El numero de cuenta debe tener 10 dígitos",
+                maxlength: "El numero de cuenta debe tener 10 dígitos",
+                digits: "Solo números son permitidos"
+            },
+            saldo: {
+                required: "Campo requerido",
+                number: "Debe ser un número válido",
+                min: "El saldo mínimo es 5",
+                max: "El saldo máximo permitido es 5000"
+            }
+        },
+        errorClass: "text-danger",
+        errorElement: "small"
+    });
+});
+</script>
+    
+</body>
+</html>

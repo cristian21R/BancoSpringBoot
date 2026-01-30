@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Layout/base  :: head('Clientes')"></head>
+<body>
+    <!-- menú -->
+    <div th:replace="Layout/base :: menu"></div>
+
+ 	<br>
+ 	
+ 	 	<script>
+function confirmarEliminar(id) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'La cuenta será eliminado',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/cuentas/eliminar/' + id;
+        }
+    });
+}
+</script>
+	<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    var mensaje = /*[[${mensaje}]]*/ null;
+    var tipo = /*[[${tipo}]]*/ null;
+
+    if (mensaje) {
+        Swal.fire({
+            icon: tipo === 'success' ? 'success' : 'error',
+            title: tipo === 'success' ? 'Éxito' : 'Error',
+            text: mensaje,
+            confirmButtonText: 'Aceptar'
+        });
+    }
+});
+</script>
+<body>
+<div class="container mt-4">
+    <h2 class= "text-center">Listado de Todas las Cuentas</h2>
+    <br>
+
+    <table class="table table-striped" id="tabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Número de Cuenta</th>
+                <th>Saldo</th>
+                <th>Cliente</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="cuenta : ${listadoCuentas}">
+                <td th:text="${cuenta.id}"></td>
+                <td th:text="${cuenta.numeroCuenta}"></td>
+                <td th:text="${cuenta.saldo}"></td>
+                <td th:text="${cuenta.cliente.nombre} + ' ' + ${cuenta.cliente.apellido}"></td>
+                <td>
+              
+                    <a th:href="@{'/cuentas/editar/' + ${cuenta.id}}" class="btn btn-warning btn-sm">Editar</a>
+                          <!-- <a th:href="@{'/cuentas/eliminar/' + ${cuenta.id}}" class="btn btn-danger btn-sm">Eliminar</a> -->
+                          
+                          <a href="#" class="btn btn-danger btn-sm"
+						   th:onclick="'confirmarEliminar(' + ${cuenta.id} + ')'">
+						   Eliminar
+						</a>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/clientes}" class="btn btn-secondary">Volver a Clientes</a>
+</div>
+
+    <div th:replace="Layout/base :: footer"></div>
+    
+    <script>
+$(document).ready(function () {
+    $('#tabla').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/es-ES.json'
+        }
+    });
+});
+</script>
+</body>
+</html>
